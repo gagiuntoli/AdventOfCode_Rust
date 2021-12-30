@@ -1,18 +1,17 @@
 use std::fs::File;
 use std::io::{self, BufRead};
-use std::path::Path;
 use std::env;
 
 fn main() {
 
     let args: Vec<String> = env::args().collect();
-    let mut values : Vec<u32> = Vec::new();
+    let file = File::open(args[1].clone()).unwrap();
 
-    if let Ok(lines) = read_lines(args[1].clone()) {
-        for line in lines {
-            if let Ok(ip) = line {
-                values.push(ip.parse::<u32>().unwrap());
-            }
+    let mut values : Vec<u32> = Vec::new();
+    let lines = io::BufReader::new(file).lines();
+    for line in lines {
+        if let Ok(ip) = line {
+            values.push(ip.parse::<u32>().unwrap());
         }
     }
 
@@ -30,12 +29,4 @@ fn main() {
     }
     println!("part 1 = {}", count1);
     println!("part 2 = {}", count2);
-}
-
-// The output is wrapped in a Result to allow matching on errors
-// Returns an Iterator to the Reader of the lines of the file.
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
