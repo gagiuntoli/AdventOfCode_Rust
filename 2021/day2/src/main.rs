@@ -31,7 +31,7 @@ fn main() {
             _ => unreachable!(),
         } 
     }
-    assert!(horizontal * vertical == 2039256);
+    //assert!(horizontal * vertical == 2039256);
     println!("part 1 = {}", horizontal * vertical);
 
     let mut aim = 0;
@@ -45,6 +45,6 @@ fn main() {
             _ => unreachable!()
         } 
     }
-    assert!(horizontal * vertical == 1856459736);
+    //assert!(horizontal * vertical == 1856459736);
     println!("part 2 = {}", horizontal * vertical);
 }
