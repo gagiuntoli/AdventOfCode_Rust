@@ -1,14 +1,11 @@
-use std::fs::File;
-use std::io::{self, BufRead};
+use std::fs;
 use std::env;
+use std::error::Error;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    let file = File::open(args[1].clone()).unwrap();
-    let mut buffer = io::BufReader::new(file);
-    let mut first_line = String::new();
-    let _ = buffer.read_line(&mut first_line);
-    let numbers = first_line.trim().split(",").map(|x| x.parse::<i64>().unwrap()).collect::<Vec<i64>>();
+fn main() -> Result<(), Box<dyn Error>> {
+    let filename = env::args().collect::<Vec<String>>()[1].clone();
+    let line: String = fs::read_to_string(filename)?.parse()?; //String::new();
+    let numbers = line.trim().split(",").map(|x| x.parse::<i64>().unwrap()).collect::<Vec<i64>>();
 
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
@@ -20,4 +17,5 @@ fn main() {
     let sol2 = (min..=max).map(|i| numbers.iter().fold(0, |sum, x| sum + (x-i).abs() * ((x-i).abs()+1) / 2)).min().unwrap();
     assert!(sol2 == 102245489);
     println!("Part 2 = {}", sol2);
+    Ok(())
 }

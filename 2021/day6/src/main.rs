@@ -1,14 +1,11 @@
-use std::fs::File;
-use std::io::{self, BufRead};
+use std::fs;
 use std::env;
+use std::error::Error;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    let file = File::open(args[1].clone()).unwrap();
-    let mut buffer = io::BufReader::new(file);
-    let mut first_line = String::new();
-    let _ = buffer.read_line(&mut first_line);
-    let numbers = first_line.trim().split(",").map(|x| x.parse::<u64>().unwrap()).collect::<Vec<u64>>();
+fn main() -> Result<(), Box<dyn Error>> {
+    let filename = env::args().collect::<Vec<String>>()[1].clone();
+    let line: String = fs::read_to_string(filename)?.parse()?; //String::new();
+    let numbers = line.trim().split(",").map(|x| x.parse::<u64>().unwrap()).collect::<Vec<u64>>();
 
     let mut days = vec![0; 9];
     for n in numbers {
@@ -22,6 +19,7 @@ fn main() {
     let sol2 = fish_num(days.clone(),256);
     assert!(sol2 == 1569108373832);
     println!("Part 2 = {}", sol2);
+    Ok(())
 }
 
 fn fish_num(mut days: Vec<u64>, total_days: u64) -> u64 {
