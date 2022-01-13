@@ -40,75 +40,31 @@ fn sort_str(str_: &str) -> String {
 fn convert(strings: &Vec<String>) -> u32 {
 
     let mut map: HashMap<String, u8> = HashMap::new();
-    let mut map_i: HashMap<u8, String> = HashMap::new();
-    let mut cf = String::new();
-    let mut bd = String::new();
-    for i in [1, 7, 4, 8, 6, 0, 9, 5, 3, 2] {
-        for s in strings {
-            if i==1 && s.len()==2 {
-                cf = s.to_string();
-                map.entry(s.to_string()).or_insert(i);
-                break;
+    let one = strings.iter().find(|x| x.len()==2).unwrap();
+    let four = strings.iter().find(|x| x.len()==4).unwrap();
+
+    for s in strings {
+        let num = match s.len() {
+            2 => 1,
+            3 => 7,
+            4 => 4,
+            7 => 8,
+            len => {
+                match (len,
+                        one.chars().map(|x| s.matches(x).count()).sum(),
+                        four.chars().map(|x| s.matches(x).count()).sum()) {
+                    (6, 2, 4) => 9,
+                    (6, 1, 3) => 6,
+                    (6, 2, 3) => 0,
+                    (5, 1, 2) => 2,
+                    (5, 2, 3) => 3,
+                    (5, 1, 3) => 5,
+                    (_, _, _) => unreachable!()
+                }
             }
-            else if i==7 && s.len()==3 {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==4 && s.len()==4 {
-                bd = diff(&s, &cf);
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==8 && s.len()==7 {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==6 && s.len()==6 && (s.find(cf.chars().nth(0).unwrap()) == None || s.find(cf.chars().nth(1).unwrap()) == None) {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==0 && s.len()==6 && (s.find(bd.chars().nth(0).unwrap()) == None || s.find(bd.chars().nth(1).unwrap()) == None) {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==9 && s.len()==6 && *s != map_i[&6] && *s != map_i[&0] {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==5 && s.len()==5 && (s.find(bd.chars().nth(0).unwrap()) != None && s.find(bd.chars().nth(1).unwrap()) != None) {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==3 && s.len()==5 && (s.find(cf.chars().nth(0).unwrap()) != None && s.find(cf.chars().nth(1).unwrap()) != None) {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            } else if i==2 && s.len()==5 && *s != map_i[&5] && *s != map_i[&3] {
-                map.entry(s.to_string()).or_insert(i);
-                map_i.entry(i).or_insert(s.to_string());
-                break;
-            }
-        }
+        };
+        map.entry(s.to_string()).or_insert(num);
     }
 
     (1..=4).rev().map(|i| (map[&strings[strings.len()-i]] as u32) * 10_u32.pow((i-1) as u32)).sum()
-}
-
-fn diff(a_: &str, b_: &str) -> String {
-    let a;
-    let b;
-    if a_.len() < b_.len() {
-        a = b_.to_string();
-        b = a_.to_string();
-    } else {
-        a = a_.to_string();
-        b = b_.to_string();
-    }
-    let mut diff_s = String::new();
-    for i in a.chars() {
-        if let None = b.find(i) {
-            diff_s.push(i);
-        }
-    }
-    diff_s
 }
