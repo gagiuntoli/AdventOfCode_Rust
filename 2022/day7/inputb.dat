@@ -1,0 +1,35 @@
+$ cd /
+$ ls
+dir a
+100001 i
+$ cd a
+$ ls
+dir b1
+dir b2
+100001 i
+$ cd b1
+$ ls
+dir c
+dir d
+100001 i
+$ cd c
+$ ls
+1000 i
+$ cd ..
+$ cd d
+$ ls
+1000 i
+$ cd ..
+$ cd ..
+$ cd b2
+$ ls
+dir c2
+dir d2
+100001 i
+$ cd c2
+$ ls
+1000 i
+$ cd ..
+$ cd d2
+$ ls
+1000 i
